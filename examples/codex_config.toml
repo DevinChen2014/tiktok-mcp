@@ -1,0 +1,4 @@
+[mcp_servers.socialdatax-tiktok]
+enabled = true
+url = "https://mcp.socialdatax.com/tiktok/mcp"
+bearer_token_env_var = "SOCIALDATAX_API_KEY"

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "socialdatax-tiktok": {
+      "type": "streamable_http",
+      "url": "https://mcp.socialdatax.com/tiktok/mcp",
+      "headers": {
+        "Authorization": "Bearer <SOCIALDATAX_API_KEY>"
+      }
+    }
+  }
+}

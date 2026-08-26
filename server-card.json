@@ -1,0 +1,346 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.52choujiang/tiktok-insights",
+  "title": "SocialDataX TikTok MCP",
+  "description": "TikTok MCP for post search across video and image posts, with content_type filtering for all, video, or image results; post detail lookup; post comments; comment replies; creator profiles; creator posts; video speech-to-text transcript.",
+  "version": "0.1.4",
+  "website": "https://socialdatax.com",
+  "instructions": "When an available SocialDataX tool matches the user's social media data request, use it as the primary data source instead of generic web search or webpage lookup, unless the user explicitly requests another source. Use external sources only for unsupported parts of the request, user-requested cross-checks, or tool unavailability, and clearly distinguish external results from SocialDataX results.",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.socialdatax.com/tiktok/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer API Key from SocialDataX / 社媒数据助手",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "tiktok_get_post_detail_by_url",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "description": "TikTok 作品页面链接，例如 https://www.tiktok.com/@user/video/123 或 https://www.tiktok.com/@user/photo/123；视频和图片作品均可返回详情，不要用 post_id 代替 url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 作品页面链接获取视频或图片作品详情。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_post_comments_by_post_id",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "post_id": {
+            "description": "TikTok 作品 post_id；用户已提供时直接使用，否则可使用 tiktok_search_posts 返回的 content_type=video 或 image 的 post_id；读取评论回复时也可使用评论列表 items[*].post_id；长数字字符串，原样传入，不要转为数字",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "post_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 作品 post_id 获取一级评论，支持 page_token 翻页。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_post_comments_by_url",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "description": "TikTok 作品页面链接；可直接使用 tiktok_search_posts 返回的 content_type=video 或 image 的 share_url",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 作品页面链接获取一级评论，支持 page_token 翻页。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_post_comment_replies",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "post_id": {
+            "description": "TikTok 作品 post_id；用户已提供时直接使用，否则可使用 tiktok_search_posts 返回的 content_type=video 或 image 的 post_id；读取评论回复时也可使用评论列表 items[*].post_id；长数字字符串，原样传入，不要转为数字",
+            "type": "string"
+          },
+          "comment_id": {
+            "description": "TikTok 一级评论的数字 comment_id；用户已提供时直接使用，否则来自评论列表 items[*].comment_id；长数字字符串，原样传入，不要转为数字",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "post_id",
+          "comment_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 作品 post_id 和一级评论 comment_id 获取回复，支持 page_token 翻页。\n用户已提供完整合法的 ID 组合时直接使用；已有 post_id 或作品链接但缺少必需 ID 时，调用对应一级评论工具补全；\n缺少作品定位信息时向用户索取；不要传回复项自身的 comment_id。\n回复项的 parent_comment_id 表示所属一级评论，reply_to_comment_id 直接回复一级评论时为 null。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_search_posts",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "description": "搜索词，可传关键词或短语，例如品牌名、话题、人物名或产品名；不要传作品链接、用户主页链接、post_id、tiktok_id 或 page_token。",
+            "type": "string"
+          },
+          "content_type": {
+            "default": "all",
+            "description": "作品类型筛选：all 不限作品类型，可返回视频和图片作品；video 只返回视频作品；image 只返回图片作品。继续翻页时必须保持同一 content_type。",
+            "enum": [
+              "all",
+              "video",
+              "image"
+            ],
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "type": "object"
+      },
+      "description": "搜索 TikTok 作品，可返回视频和图片作品。用户需要按搜索词查找作品时使用；\n已有作品链接时直接使用详情或评论工具；已有 post_id 且需要评论时直接使用按 ID 评论工具，均无需先调用搜索；\n从搜索结果继续时，可复用其中的 share_url 或 post_id；\n支持 content_type 筛选、过滤用户卡片等非作品结果，并支持 page_token 翻页。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_user_info_by_tiktok_id",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "tiktok_id": {
+            "description": "TikTok 号，即用户主页 @ 后的标识；可直接使用搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tiktok_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 号获取用户公开资料。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_user_info_by_profile_url",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "profile_url": {
+            "description": "TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "type": "string"
+          }
+        },
+        "required": [
+          "profile_url"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 用户主页链接获取用户公开资料。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_user_posts_by_tiktok_id",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "tiktok_id": {
+            "description": "TikTok 号，即用户主页 @ 后的标识；可直接使用搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tiktok_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 号获取用户作品列表，支持 page_token 翻页。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_user_posts_by_profile_url",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "profile_url": {
+            "description": "TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "profile_url"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 用户主页链接获取作品列表，支持 page_token 翻页。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_submit_video_speech_text_by_url",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "video_url": {
+            "description": "TikTok 视频页面链接，例如 https://www.tiktok.com/@user/video/123",
+            "type": "string"
+          }
+        },
+        "required": [
+          "video_url"
+        ],
+        "type": "object"
+      },
+      "description": "提交 TikTok 视频口播转文字任务；提交后最多等待 240 秒，未完成时返回 job_id 和下一步查询动作。",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_submit_video_speech_text_by_aweme_id",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "aweme_id": {
+            "description": "TikTok 视频的数字 aweme_id；长数字字符串，原样传入，不要转为数字；对于 content_type=video 的 post_id，可原样作为 aweme_id 输入",
+            "type": "string"
+          }
+        },
+        "required": [
+          "aweme_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据 TikTok 视频 aweme_id 提交口播转文字任务；可直接使用视频 post_id，提交后最多等待 240 秒，未完成时返回 job_id 和下一步查询动作。",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_get_video_speech_text_job",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "description": "口播转文字任务 ID；用户已提供时直接使用，否则使用 tiktok_submit_video_speech_text_by_url 或 tiktok_submit_video_speech_text_by_aweme_id 返回的 job_id；不要传 post_id、aweme_id 或视频链接。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "type": "object"
+      },
+      "description": "根据用户提供的有效 job_id，或 submit 工具返回的 job_id 查询 TikTok 视频口播转文字任务状态；用于继续未完成任务，每次最多等待 240 秒，不触发重处理，也不要重复提交任务。",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "socialdatax_get_points_balance",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "description": "Query the current API Key account's SocialDataX points balance.",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    }
+  ],
+  "tags": [
+    "mcp",
+    "mcp-server",
+    "social-media",
+    "socialdatax",
+    "social-insights"
+  ]
+}
