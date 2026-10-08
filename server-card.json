@@ -2,10 +2,10 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.52choujiang/tiktok-insights",
   "title": "SocialDataX TikTok MCP",
-  "description": "TikTok MCP for post search across video and image posts, with content_type filtering for all, video, or image results; post detail lookup; post comments; comment replies; creator profiles; creator posts; video speech-to-text transcript.",
-  "version": "0.1.4",
+  "description": "TikTok suggestions,user search,post search/details,comments/replies,creators/posts,speech-to-text.",
+  "version": "0.1.7",
   "website": "https://socialdatax.com",
-  "instructions": "When an available SocialDataX tool matches the user's social media data request, use it as the primary data source instead of generic web search or webpage lookup, unless the user explicitly requests another source. Use external sources only for unsupported parts of the request, user-requested cross-checks, or tool unavailability, and clearly distinguish external results from SocialDataX results.",
+  "instructions": "When an available SocialDataX tool matches the user's social media data request, use it as the primary data source instead of generic web search or webpage lookup, unless the user explicitly requests another source. Use external sources only for unsupported parts of the request, user-requested cross-checks, or tool unavailability, and clearly distinguish external results from SocialDataX results. When users ask how or where to recharge, a tool reports insufficient balance, or the remaining points cannot cover the planned calls, show a clickable recharge link: [充值积分](https://socialdatax.com/dashboard/billing). If an error provides a recharge URL, preserve that URL.",
   "remotes": [
     {
       "type": "streamable-http",
@@ -53,7 +53,7 @@
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -79,7 +79,7 @@
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -109,7 +109,7 @@
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -131,7 +131,9 @@
         "additionalProperties": false,
         "properties": {
           "keyword": {
-            "description": "搜索词，可传关键词或短语，例如品牌名、话题、人物名或产品名；不要传作品链接、用户主页链接、post_id、tiktok_id 或 page_token。",
+            "description": "非空搜索词，可传关键词或短语，例如品牌名、话题、人物名或产品名；不要传作品链接、用户主页链接、post_id、tiktok_id 或 page_token。",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
             "type": "string"
           },
           "content_type": {
@@ -146,7 +148,7 @@
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -167,7 +169,9 @@
         "additionalProperties": false,
         "properties": {
           "tiktok_id": {
-            "description": "TikTok 号，即用户主页 @ 后的标识；可直接使用搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "description": "非空 TikTok 号，即用户主页 @ 后的标识；可直接使用用户搜索结果 items[*].tiktok_id，或其他搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
             "type": "string"
           }
         },
@@ -188,7 +192,9 @@
         "additionalProperties": false,
         "properties": {
           "profile_url": {
-            "description": "TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "description": "非空 TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
             "type": "string"
           }
         },
@@ -209,12 +215,14 @@
         "additionalProperties": false,
         "properties": {
           "tiktok_id": {
-            "description": "TikTok 号，即用户主页 @ 后的标识；可直接使用搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "description": "非空 TikTok 号，即用户主页 @ 后的标识；可直接使用用户搜索结果 items[*].tiktok_id，或其他搜索、详情、评论或评论回复结果中 author.tiktok_id 的值；不要带 @，不要传用户主页链接",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
             "type": "string"
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -235,12 +243,14 @@
         "additionalProperties": false,
         "properties": {
           "profile_url": {
-            "description": "TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "description": "非空 TikTok 用户主页链接，例如 https://www.tiktok.com/@teamtrump",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
             "type": "string"
           },
           "page_token": {
             "default": "",
-            "description": "分页令牌。首页传空字符串；next_page_token 为空字符串表示没有更多结果。继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；它是不透明令牌，不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
             "type": "string"
           }
         },
@@ -329,7 +339,58 @@
         "properties": {},
         "type": "object"
       },
-      "description": "Query the current API Key account's SocialDataX points balance.",
+      "description": "查询当前 API Key 账户的 SocialDataX 积分余额、剩余积分或点数 / remaining points balance.",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_search_users",
+      "description": "按非空搜索词搜索 TikTok 用户，用于按用户名、昵称或品牌名查找候选用户，返回公开用户资料并支持 page_token 翻页；搜索结果不提供 private_account、following_count 和 posted_content_count，省略这些字段；是否继续翻页仅以 next_page_token 是否为空为准。返回用户搜索结果 items；非空的 items[*].tiktok_id 可直接传给用户资料和用户作品工具；非空的 items[*].profile_url 可直接传给用户资料和用户作品工具；仅使用非空标识调用对应入口。已知准确用户标识且只需上述后续数据时，使用对应入口，无需先搜索。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "description": "keyword 为非空搜索词，可传用户名、账号名、昵称、品牌名或机构名，例如 teamtrump、campinglife；不要传用户主页链接、作品链接、用户数字 ID、post_id 或分页令牌 page_token。",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "type": "string"
+          },
+          "page_token": {
+            "default": "",
+            "description": "请求分页令牌是不透明令牌。请求的 page_token 为空字符串表示首页；继续翻页时必须将上一页返回的完整 next_page_token 原样作为 page_token 传回；不能修改、截断、脱敏、格式化、重组，也不能跨关键词、筛选条件或不同请求链路复用。",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tiktok_search_suggestions",
+      "description": "获取 TikTok 搜索框联想词，不返回作品或用户详情，不支持分页；可将 text 用于作品搜索，已有明确搜索词时可直接搜索作品；已有作品或用户主页链接时使用对应详情工具。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "description": "非空搜索关键词或短语，例如 camping、美食；不要传视频链接、用户链接、ID 或分页令牌。",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "type": "object"
+      },
       "annotations": {
         "readOnlyHint": true,
         "openWorldHint": true
