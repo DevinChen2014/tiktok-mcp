@@ -12,7 +12,7 @@ This public listing provides connection metadata and client examples for the hos
 - Registry name: `com.52choujiang/tiktok-insights`
 - Future registry name: `com.socialdatax/tiktok-insights`
 - Current public capability version: `0.1.7` (15 tools; hosted server card and authenticated tools/list verified on 2026-10-08)
-- Official Registry latest verified version: `0.1.5`. Publication of `0.1.7` returned a gateway timeout on 2026-10-08; confirmation is pending.
+- Official Registry: [`0.1.7`](https://registry.modelcontextprotocol.io/v0.1/servers/com.52choujiang%2Ftiktok-insights/versions/0.1.7), verified active and latest on 2026-10-08.
 
 ## Scope
 

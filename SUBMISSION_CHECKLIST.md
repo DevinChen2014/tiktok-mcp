@@ -33,6 +33,6 @@
 
 - Version `0.1.5` added `tiktok_search_suggestions(keyword)`, returning `items[].text` without pagination.
 - `tiktok_search_users(keyword, page_token)` returns public user profiles without internal protocol identifiers.
-- Official Registry last verified latest was `0.1.5`; publishing `0.1.7` returned a gateway timeout on 2026-10-08. Query the target version before retrying publication.
+- Official Registry `0.1.7` is published and verified active/latest on 2026-10-08.
 
 User search and profile responses omit unknown verification, privacy and account counts; known `false` and `0` values are preserved. These fields are optional; callers must not interpret omission as a negative or zero.
